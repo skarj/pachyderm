@@ -1,11 +1,13 @@
 # Pachyderm
 ### Installation
 
-*  Install **Pachyderm**
-
         make install
         pachctl create-repo images
         pachctl put-file images master liberty.png -f http://imgur.com/46Q8nDz.png
+
+### Cleanup
+
+        make clean
 
 ### Links
 
