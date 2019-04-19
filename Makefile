@@ -25,6 +25,7 @@ authorize:
 
 	source gcloud/authorize.sh
 
+
 infrastructure: authorize
 	@echo ""
 	@echo "=================================="
@@ -37,6 +38,7 @@ infrastructure: authorize
 		-var pachyderm_namespace=${NAMESPACE} \
 		gcloud/terraform
 
+
 pachctl:
 	@echo ""
 	@echo "=================================="
@@ -45,6 +47,7 @@ pachctl:
 
 	curl -o /tmp/pachctl.deb -L https://github.com/pachyderm/pachyderm/releases/download/v1.8.6/pachctl_1.8.6_amd64.deb \
 		&& sudo dpkg -i /tmp/pachctl.deb
+
 
 install: authorize infrastructure
 	@echo ""
@@ -65,17 +68,19 @@ install: authorize infrastructure
 		--pachd-cpu-request=250m \
 		--pachd-memory-request=512M
 
+
 uninstall: authorize
 	@echo ""
 	@echo "=================================="
 	@echo "      Uninstalling Pachyderm      "
 	@echo "=================================="
 
-
 	pachctl undeploy --all --namespace=${NAMESPACE}
+
 
 killforward:
 	killall pachctl 2>/dev/null || true
+
 
 portforward: killforward authorize
 	@echo ""
@@ -84,6 +89,7 @@ portforward: killforward authorize
 	@echo "=================================="
 
 	pachctl port-forward --namespace=${NAMESPACE} &
+
 
 clean: killforward uninstall
 	@echo ""
