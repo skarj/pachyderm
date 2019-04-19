@@ -100,4 +100,5 @@ clean: killforward uninstall
 	terraform destroy \
 		-var pachyderm_data_bucket_name=${BUCKET_NAME} \
 		-var pachyderm_namespace=${NAMESPACE} \
+		-auto-approve \
 		gcloud/terraform

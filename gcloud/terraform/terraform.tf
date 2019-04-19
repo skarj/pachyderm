@@ -8,6 +8,7 @@ variable "pachyderm_namespace" {
 }
 resource "google_storage_bucket" "data_bucket" {
   name = "${var.pachyderm_data_bucket_name}"
+  force_destroy = true
 }
 
 resource "google_container_cluster" "pachyderm" {
