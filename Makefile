@@ -20,7 +20,7 @@ NAMESPACE=pachyderm
 authorize:
 	@echo ""
 	@echo "=================================="
-	@echo " 	       Authorize	         "
+	@echo "            Authorize	         "
 	@echo "=================================="
 
 	source gcloud/authorize.sh
@@ -28,7 +28,7 @@ authorize:
 infrastructure: authorize
 	@echo ""
 	@echo "=================================="
-	@echo " 	 Creating infrastructure	 "
+	@echo "      Creating infrastructure	 "
 	@echo "=================================="
 
 	terraform init gcloud/terraform
