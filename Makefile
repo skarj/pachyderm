@@ -88,7 +88,7 @@ portforward: killforward authorize
 clean: killforward uninstall
 	@echo ""
 	@echo "=================================="
-	@echo "      Cleaning everything	     "
+	@echo "      Cleaning everything         "
 	@echo "=================================="
 
 	terraform destroy \
