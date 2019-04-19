@@ -1,4 +1,5 @@
-# Installation
+# Pachyderm
+### Installation
 
 *  Install **Helm**
 
@@ -13,6 +14,6 @@
         make install-pachctl
 
 
-# Links
+### Links
 
 * Helm chart https://github.com/helm/charts/tree/master/stable/pachyderm
