@@ -37,7 +37,5 @@ gcloud auth activate-service-account --key-file $gcp_creds \
 export GKE_CLUSTER_NAME=$gke_cluster
 
 # Kubernetes
-printf "Trying to get credentials for $gke_cluster GKE Cluster. Project: $gke_cluster. Zone: $gke_zone\n"
 gcloud container clusters get-credentials $gke_cluster --zone $gke_zone --project $gcp_project \
-  && kubectl config set-context $(kubectl config current-context) --namespace=$gke_namespace \
-  && printf "Selected $gke_cluster cluster.\nNow you can use kubectl to configure Kubernetes\n"
+  && kubectl config set-context $(kubectl config current-context) --namespace=$gke_namespace

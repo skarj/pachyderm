@@ -1,7 +1,12 @@
 # Pachyderm
-### Installation
+### Install infrastructure
 
+        cd gcloud
         make install
+
+### Create pipelne
+
+        make portforward
         pachctl create-repo images
         pachctl put-file images master liberty.png -f http://imgur.com/46Q8nDz.png
 

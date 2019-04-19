@@ -1,10 +1,10 @@
 SHELL := /bin/bash
 
 EXECUTABLES = gcloud terraform kubectl curl
-K := $(foreach exec,$(EXECUTABLES),\
-        $(if $(shell which $(exec)),some string,$(error "No $(exec) in PATH")))
+K := $(foreach exec, $(EXECUTABLES), \
+    $(if $(shell which $(exec)),some string,$(error "No $(exec) in PATH")))
 
-.PHONY: authorize infrastructure pachctl pachyderm uninstall portforward
+.PHONY: infrastructure pachctl install uninstall portforward killforward clean
 
 # For the persistent disk, 10GB is a good size to start with.
 # This stores PFS metadata. For reference, 1GB
@@ -15,29 +15,22 @@ STORAGE_SIZE = 10
 # The Pachyderm bucket name needs to be globally unique across the entire GCP region.
 # BUCKET_NAME=<The name of the GCS bucket where your data will be stored>
 BUCKET_NAME = pachyderm-data-test
-NAMESPACE=pachyderm
 
-authorize:
+NAMESPACE = pachyderm
+
+
+infrastructure:
 	@echo ""
 	@echo "=================================="
-	@echo "            Authorize	         "
+	@echo "      Creating infrastructure     "
 	@echo "=================================="
 
-	source gcloud/authorize.sh
-
-
-infrastructure: authorize
-	@echo ""
-	@echo "=================================="
-	@echo "      Creating infrastructure	 "
-	@echo "=================================="
-
-	terraform init gcloud/terraform
+	source authorize.sh && \
+	terraform init terraform && \
 	terraform apply \
 		-var pachyderm_data_bucket_name=${BUCKET_NAME} \
 		-var pachyderm_namespace=${NAMESPACE} \
-		gcloud/terraform
-
+		terraform
 
 pachctl:
 	@echo ""
@@ -48,18 +41,19 @@ pachctl:
 	curl -o /tmp/pachctl.deb -L https://github.com/pachyderm/pachyderm/releases/download/v1.8.6/pachctl_1.8.6_amd64.deb \
 		&& sudo dpkg -i /tmp/pachctl.deb
 
-
-install: authorize infrastructure
+install: infrastructure
 	@echo ""
 	@echo "=================================="
 	@echo "       Installing Pachyderm       "
 	@echo "=================================="
 
 	# https://github.com/pachyderm/pachyderm/issues/2787
+	source gcloud/authorize.sh && \
 	kubectl create clusterrolebinding cluster-admin-binding \
 		--clusterrole cluster-admin \
 		--user $(shell gcloud config get-value account) 2>/dev/null; true
 
+	source authorize.sh && \
 	pachctl deploy google ${BUCKET_NAME} ${STORAGE_SIZE} \
 		--namespace=${NAMESPACE} \
 		--dynamic-etcd-nodes=1 \
@@ -68,28 +62,26 @@ install: authorize infrastructure
 		--pachd-cpu-request=250m \
 		--pachd-memory-request=512M
 
-
-uninstall: authorize
+uninstall:
 	@echo ""
 	@echo "=================================="
 	@echo "      Uninstalling Pachyderm      "
 	@echo "=================================="
 
+	source authorize.sh && \
 	pachctl undeploy --all --namespace=${NAMESPACE}
-
 
 killforward:
 	killall pachctl 2>/dev/null || true
 
-
-portforward: killforward authorize
+portforward: killforward
 	@echo ""
 	@echo "=================================="
 	@echo "     Forwarding Pachyderm Port    "
 	@echo "=================================="
 
+	source authorize.sh && \
 	pachctl port-forward --namespace=${NAMESPACE} &
-
 
 clean: killforward uninstall
 	@echo ""
@@ -97,8 +89,9 @@ clean: killforward uninstall
 	@echo "      Cleaning everything         "
 	@echo "=================================="
 
+	source authorize.sh && \
 	terraform destroy \
 		-var pachyderm_data_bucket_name=${BUCKET_NAME} \
 		-var pachyderm_namespace=${NAMESPACE} \
 		-auto-approve \
-		gcloud/terraform
+		terraform
