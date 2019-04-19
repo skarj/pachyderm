@@ -3,6 +3,7 @@
 unset GCLOUD_KEYFILE_JSON
 unset GCLOUD_REGION
 unset GCLOUD_PROJECT
+unset GCP_PROJECT
 unset CLOUDSDK_CORE_PROJECT
 unset CLOUDSDK_CONTAINER_USE_CLIENT_CERTIFICATE
 unset GOOGLE_APPLICATION_CREDENTIALS
@@ -25,6 +26,7 @@ export GCLOUD_PROJECT=$gcp_project
 printf "Exported environment variables for terraform. Project: $gcp_project.\n"
 
 # Gcloud SDK environment variables
+export GCP_PROJECT=$gcp_project
 export CLOUDSDK_CORE_PROJECT=$gcp_project
 export CLOUDSDK_CONTAINER_USE_CLIENT_CERTIFICATE=False
 export GOOGLE_APPLICATION_CREDENTIALS=$gcp_creds
