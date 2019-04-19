@@ -14,7 +14,7 @@ gcp_project=quixotic-being-214814
 gcp_region=us-central1
 
 # GKE cluster properties
-gke_cluster=pachyderm-cluster-1
+gke_cluster=standard-cluster-1
 gke_zone=us-central1-a
 gke_namespace=pachyderm
 

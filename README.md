@@ -2,18 +2,17 @@
 
 *  Install **Helm**
 
-        kubectl apply -f gcloud/helm/helm-tiller
-        helm init --service-account tiller
+        make install-helm
 
 *  Install **Pachyderm**
 
-        helm install stable/pachyderm --name pachyderm --namespace pachyderm -f gcloud/helm/values.yaml
-
-    https://github.com/helm/charts/tree/master/stable/pachyderm
-
+        make install-pachyderm
 
 *  Install **Pachyderm client**
 
-        curl -o /tmp/pachctl.deb -L https://github.com/pachyderm/pachyderm/releases/download/v1.8.6/pachctl_1.8.6_amd64.deb && sudo dpkg -i /tmp/pachctl.deb
+        make install-pachctl
 
-        pachctl --namespace=pachyderm port-forward &
+
+# Links
+
+* Helm chart https://github.com/helm/charts/tree/master/stable/pachyderm
