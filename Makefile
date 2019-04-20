@@ -4,7 +4,7 @@ EXECUTABLES = gcloud terraform kubectl curl
 K := $(foreach exec, $(EXECUTABLES), \
     $(if $(shell which $(exec)),some string,$(error "No $(exec) in PATH")))
 
-.PHONY: infrastructure pachctl install uninstall portforward killforward clean
+.PHONY: infrastructure pachctl install uninstall portforward killforward clean repo pipelines
 
 # For the persistent disk, 10GB is a good size to start with.
 # This stores PFS metadata. For reference, 1GB
@@ -25,12 +25,12 @@ infrastructure:
 	@echo "      Creating infrastructure     "
 	@echo "=================================="
 
-	source authorize.sh && \
-	terraform init terraform && \
+	source gcloud/authorize.sh && \
+	terraform init gcloud/terraform && \
 	terraform apply \
 		-var pachyderm_data_bucket_name=${BUCKET_NAME} \
 		-var pachyderm_namespace=${NAMESPACE} \
-		terraform
+		gcloud/terraform
 
 pachctl:
 	@echo ""
@@ -53,7 +53,7 @@ install: infrastructure
 		--clusterrole cluster-admin \
 		--user $(shell gcloud config get-value account) 2>/dev/null; true
 
-	source authorize.sh && \
+	source gcloud/authorize.sh && \
 	pachctl deploy google ${BUCKET_NAME} ${STORAGE_SIZE} \
 		--namespace=${NAMESPACE} \
 		--dynamic-etcd-nodes=1 \
@@ -68,7 +68,7 @@ uninstall:
 	@echo "      Uninstalling Pachyderm      "
 	@echo "=================================="
 
-	source authorize.sh && \
+	source gcloud/authorize.sh && \
 	pachctl undeploy --all --namespace=${NAMESPACE}
 
 killforward:
@@ -80,7 +80,7 @@ portforward: killforward
 	@echo "     Forwarding Pachyderm Port    "
 	@echo "=================================="
 
-	source authorize.sh && \
+	source gcloud/authorize.sh && \
 	pachctl port-forward --namespace=${NAMESPACE} &
 
 clean: killforward uninstall
@@ -89,9 +89,29 @@ clean: killforward uninstall
 	@echo "      Cleaning everything         "
 	@echo "=================================="
 
-	source authorize.sh && \
+	source gcloud/authorize.sh && \
 	terraform destroy \
 		-var pachyderm_data_bucket_name=${BUCKET_NAME} \
 		-var pachyderm_namespace=${NAMESPACE} \
 		-auto-approve \
-		terraform
+		gcloud/terraform
+
+repo: portforward
+	@echo ""
+	@echo "=================================="
+	@echo "      Cleaning repository         "
+	@echo "=================================="
+
+	pachctl create-repo images
+	pachctl put-file images master liberty.png -f http://imgur.com/46Q8nDz.png
+	pachctl put-file images master AT-AT.png -f http://imgur.com/8MN9Kg0.png
+	pachctl put-file images master kitten.png -f http://imgur.com/g2QnNqa.png
+
+pipelines: portforward
+	@echo ""
+	@echo "=================================="
+	@echo "      Cleaning pipelines          "
+	@echo "=================================="
+
+	pachctl create-pipeline -f pipelines/montage/montage.json
+	pachctl create-pipeline -f pipelines/edges/edges.json

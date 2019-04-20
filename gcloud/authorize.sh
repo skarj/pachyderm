@@ -1,14 +1,5 @@
 #!/bin/bash
 
-unset GCLOUD_KEYFILE_JSON
-unset GCLOUD_REGION
-unset GCLOUD_PROJECT
-unset GCP_PROJECT
-unset CLOUDSDK_CORE_PROJECT
-unset CLOUDSDK_CONTAINER_USE_CLIENT_CERTIFICATE
-unset GOOGLE_APPLICATION_CREDENTIALS
-unset GKE_CLUSTER_NAME
-
 # GCP account properties
 gcp_creds=~/.config/gcloud/quixotic-being-214814.json
 gcp_project=quixotic-being-214814
@@ -18,6 +9,15 @@ gcp_region=us-central1
 gke_cluster=pachyderm
 gke_zone=us-central1-a
 gke_namespace=pachyderm
+
+unset GCLOUD_KEYFILE_JSON
+unset GCLOUD_REGION
+unset GCLOUD_PROJECT
+unset GCP_PROJECT
+unset CLOUDSDK_CORE_PROJECT
+unset CLOUDSDK_CONTAINER_USE_CLIENT_CERTIFICATE
+unset GOOGLE_APPLICATION_CREDENTIALS
+unset GKE_CLUSTER_NAME
 
 # Terraform environment variables
 export GCLOUD_KEYFILE_JSON=$gcp_creds
@@ -36,6 +36,6 @@ gcloud auth activate-service-account --key-file $gcp_creds \
 # Gcloud SDK environment variables
 export GKE_CLUSTER_NAME=$gke_cluster
 
-# Kubernetes
+# GKE cluster credentials
 gcloud container clusters get-credentials $gke_cluster --zone $gke_zone --project $gcp_project \
   && kubectl config set-context $(kubectl config current-context) --namespace=$gke_namespace

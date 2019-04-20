@@ -4,11 +4,17 @@
         cd gcloud
         make install
 
-### Create pipelne
+### Create and fill repository
 
-        make portforward
-        pachctl create-repo images
-        pachctl put-file images master liberty.png -f http://imgur.com/46Q8nDz.png
+        make repo
+
+### Create pipelines
+
+        make pipelines
+
+### Check results
+
+        pachctl get-file montage master montage.png | display
 
 ### Cleanup
 
