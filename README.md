@@ -1,8 +1,9 @@
 # Pachyderm
 ### Install infrastructure
 
-        cd gcloud
+        # comment out GKE cluster credentils in authorize.sh (TODO)
         make install
+        # uncomment GKE cluster credentils in authorize.sh (TODO)
 
 ### Create and fill repository
 

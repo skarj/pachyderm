@@ -1,0 +1,15 @@
+{
+  "pipeline": {
+    "name": "text-to-speech"
+  },
+  "transform": {
+    "cmd": [ "python3", "/tts.py" ],
+    "image": "skarj/tts"
+  },
+  "input": {
+    "pfs": {
+      "repo": "tts",
+      "glob": "/*"
+    }
+  }
+}

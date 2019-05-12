@@ -96,7 +96,7 @@ clean: killforward uninstall
 		-auto-approve \
 		gcloud/terraform
 
-repo: portforward
+repo-images: portforward
 	@echo ""
 	@echo "=================================="
 	@echo "      Cleaning repository         "
@@ -107,7 +107,16 @@ repo: portforward
 	pachctl put-file images master AT-AT.png -f http://imgur.com/8MN9Kg0.png
 	pachctl put-file images master kitten.png -f http://imgur.com/g2QnNqa.png
 
-pipelines: portforward
+repo-tts: portforward
+	@echo ""
+	@echo "=================================="
+	@echo "      Cleaning repository         "
+	@echo "=================================="
+
+	pachctl create-repo tts
+	pachctl put-file tts master london.txt -f pipelines/tts/test/london.txt
+
+pipelines-images: portforward
 	@echo ""
 	@echo "=================================="
 	@echo "      Cleaning pipelines          "
@@ -115,3 +124,11 @@ pipelines: portforward
 
 	pachctl create-pipeline -f pipelines/montage/montage.json
 	pachctl create-pipeline -f pipelines/edges/edges.json
+
+pipelines-tts: portforward
+	@echo ""
+	@echo "=================================="
+	@echo "      Cleaning pipelines          "
+	@echo "=================================="
+
+	pachctl create-pipeline --file pipelines/tts/tts.json

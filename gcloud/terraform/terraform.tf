@@ -57,7 +57,4 @@ resource "kubernetes_namespace" "pachyderm" {
   metadata {
     name = "${var.pachyderm_namespace}"
   }
-  lifecycle {
-    prevent_destroy = true
-  }
 }
